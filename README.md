@@ -1,3 +1,3 @@
 # First
-first_repository for study
-and for Mr. Petro))
+That is my first repository where i'm learning Web Development for my future work.
+
