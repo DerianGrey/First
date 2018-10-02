@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Study bootstrap</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale-1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<style>
+.results tr[visible='false'],
+.no-result {
+display: none;
+}
+.results tr[visible='true'] {
+display: table-row;
+}
+.searchCount {
+padding: 8px;
+color: #ccc;
+}
+</style>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+	</script>
+</head>
+<body>
+	<nav class="navbar navbar-dark bg-info navbar-expand-lg">
+    <div class="container">
+     <h1><a href="#" class="navbar-brand">Developing</a></h1>
+      </div>
+    </div>
+  </nav>﻿
+  <div class="row table-hover table-bordered">
+  	<div class="col-md-3">
+  		<div>
+<input type="text" class="searchKey" placeholder="Кого ищите?">
+</div>
+<span class="searchCount"></span>
+		<table class="table results">
+			<tr class="no-result"><td>Совпадения не найдены</td></tr>
+			<tr><td>Бред Питт</td></tr>
+			<tr><td>Леонардо Ди Каприо</td></tr>
+			<tr><td>Джонни Депп</td></tr>
+			<tr><td>Том Круз</td></tr>
+			<tr><td>Анджелина Джоли</td></tr>
+			<tr><td>Джим Кери</td></tr>
+			<tr><td>Райан Гослинг</td></tr>
+			<tr><td>Том Харди</td></tr>
+			<tr><td>Уилл Смит</td></tr>
+			<tr><td>Квентин Тарантино</td></tr>
+			<tr><td>Роберт Дауни</td></tr>
+			<tr><td>Хоакин Феникс</td></tr>
+			<tr><td>Антонио Бандерас</td></tr>
+			<tr><td>Элайджа Вуд</td></tr>
+			<tr><td>Райан Рейнольдс</td></tr>
+			<tr><td>Мэтт Деймонд</td></tr>
+			<tr><td>Кристиан Бэйл</td></tr>
+			<tr><td>Том Хенкс</td></tr>
+			<tr><td>Майкл Фассбендер</td></tr>
+			<tr><td>Бен Аффлек</td></tr>
+			</table>
+	  </div>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+function createExpr(arr) {
+var index = 0;
+var expr = [":containsiAND('" + arr[0] + "')"];
+for (var i = 1; i < arr.length; i++) {
+if (arr[i] === 'AND') {
+expr[index] += ":containsiAND('" + arr[i + 1] + "')";
+i++;
+} else if (arr[i] === 'OR') {
+index++;
+expr[index] = ":containsiOR('" + arr[i + 1] + "')";
+i++;
+}
+}
+return expr;
+}
+$(document).ready(function() {
+ 
+$(".searchKey").keyup(function() {
+var searchTerm = $(".searchKey").val().replace(/["']/g, "");
+var arr = searchTerm.split(/(AND|OR)/);
+var exprs = createExpr(arr);
+var searchSplit = searchTerm.replace(/AND/g, "'):containsiAND('").replace(/OR/g, "'):containsiOR('");
+ 
+$.extend($.expr[':'], {
+'containsiAND': function(element, i, match, array) {
+return (element.textContent || element.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+}
+});
+ 
+$('.results tbody tr').attr('visible', 'false');
+for (var expr in exprs) {
+$(".results tbody tr" + exprs[expr]).each(function(e) {
+$(this).attr('visible', 'true');
+});
+}
+ 
+var searchCount = $('.results tbody tr[visible="true"]').length;
+ 
+$('.searchCount').text('найдено ' + searchCount + ' человек');
+if (searchCount == '0') {
+$('.no-result').show();
+} else {
+$('.no-result').hide();
+}
+if ($('.searchKey').val().length == 0) {
+$('.searchCount').hide();
+} else {
+$('.searchCount').show();
+}
+});
+});
+</script>
+</html>
